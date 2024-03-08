@@ -13,6 +13,7 @@ export default function RollsHome() {
   const [add, setAdd] = useState(0)
   const [rolls, setRolls] = useState({})
   const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [errors, setErrors] = useState([])
 
   useEffect(() => {
     const dbRef = ref(database, 'rolls');
@@ -45,7 +46,9 @@ export default function RollsHome() {
     if (buttonDisabled) {
       return
     }
+    setErrors([])
     if (!name) {
+      setErrors(['Please enter a name'])
       return console.log('Please enter a name')
     }
     let locRolls = []
@@ -168,6 +171,13 @@ export default function RollsHome() {
               onChange={handleName} 
               className='bg-transparent border mx-2 px-2 py-1'
             />
+            <div>
+              {errors.length ? errors.map(error => (
+                    <p className='text-red-500'>{error}</p>
+                  )
+                ) : <></>
+              }
+            </div>
           </div>
           <div id="functionalityContainer" className='flex flex-row justify-between items-center'>
             <AdvantageDropdown selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
