@@ -120,16 +120,17 @@ export default function RollsHome() {
   return (
     <main className="flex p-24">
       <div id="rollBox" className='flex flex-col w-full'>
-        <div id="topBar" className='flex justify-between'>
-          <div id="nameContainer" className='flex'>
-            <p className=''>Name:</p>
+        <div id="topBar" className='flex justify-between p-2 border'>
+          <div id="nameContainer" className='flex items-center'>
+            <p>Name:</p>
             <input 
               id='' 
               value={name} 
               onChange={handleName} 
+              className='bg-transparent border mx-2 px-2 py-1'
             />
           </div>
-          <div id="functionalityContainer" className='flex flex-row justify-between'>
+          <div id="functionalityContainer" className='flex flex-row justify-between items-center'>
             <AdvantageDropdown selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
             <p>Roll:</p>
             <input 
@@ -139,6 +140,7 @@ export default function RollsHome() {
               max={100}
               value={numberOfDice} 
               onChange={handleNumberOfDice} 
+              className='bg-transparent border mx-2 px-2 py-1'
             />
             <p>d</p>
             <input 
@@ -148,6 +150,7 @@ export default function RollsHome() {
               max={100}
               value={sides} 
               onChange={handleSides} 
+              className='bg-transparent border mx-2 px-2 py-1'
             />
             <p>+</p>
             <input 
@@ -157,8 +160,9 @@ export default function RollsHome() {
               max={1000}
               value={add} 
               onChange={handleAdd} 
+              className='bg-transparent border mx-2 px-2 py-1'
             />
-            <button onClick={handleRoll}>Roll</button>
+            <button onClick={handleRoll} className='mx-2 px-4 py-1 border'>Roll</button>
           </div>
         </div>
         <div id="rolls">

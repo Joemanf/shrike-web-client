@@ -12,9 +12,18 @@ export default function AdvantageDropdown({ selectedStatus, setSelectedStatus })
   };
 
   return (
-    <select id="advantageDropdown" value={selectedStatus} onChange={handleStatusChange}>
+    <select 
+      id="advantageDropdown" 
+      value={selectedStatus} 
+      onChange={handleStatusChange}
+      className='bg-transparent border mx-2'
+    >
       {options.map((option) => (
-        <option key={option.value} value={option.value}>
+        <option 
+          key={option.value} 
+          value={option.value}
+          className='text-black'
+        >
           {option.label}
         </option>
       ))}
