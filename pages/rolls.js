@@ -110,10 +110,6 @@ export default function RollsHome() {
       result: rollsStr,
       total: rollsTotal
     }
-    // setRolls is a temporary fix.
-    // Eventually, we'll want to send the data to the backend,
-    // and from there pull the data via a subscription watcher/webhook
-    // setRolls([rollData, ...rolls])
     sendToBackend(rollData)
     setButtonDisabled(true)
     setTimeout(() => {
