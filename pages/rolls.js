@@ -48,24 +48,67 @@ export default function RollsHome() {
     if (!name) {
       return console.log('Please enter a name')
     }
-    const locRolls = []
+    let locRolls = []
+    let rollsStr = ''
     // have to account for adv and dis
-    for (let i = 0; i < parseInt(numberOfDice); i++) {
-        let roll = Math.floor(Math.random() * parseInt(sides)) + 1
-        locRolls.push(roll + parseInt(add));
+    if (selectedStatus === 'normal') {
+      for (let i = 0; i < parseInt(numberOfDice); i++) {
+          let roll = Math.floor(Math.random() * parseInt(sides)) + 1
+          locRolls.push(roll + parseInt(add));
+      }
+    } else {
+      for (let i = 0; i < parseInt(numberOfDice); i++) {
+        const rollsTemp = []
+        for (let j = 0; j < 2; j++) {
+            rollsTemp.push(Math.floor(Math.random() * parseInt(sides)) + 1);
+        }
+        locRolls = [...locRolls, ...rollsTemp]
+      }
     }
     const time = handleTime()
     const logic = `${selectedStatus === 'advantage' ? `[Adv] ` : `${selectedStatus === `disadvantage` ? `[Dis] ` : ``}`}${numberOfDice}d${sides}${add != 0 ? ` + ${add}` : ``}`
     let rollsTotal = [];
-    locRolls.forEach(r => {
-      rollsTotal.push(r)
+    locRolls.forEach((r, i) => {
+      if (selectedStatus === 'normal') {
+        rollsTotal.push(r)
+        rollsStr += `${r-parseInt(add)}${add ? ` + ${add}` : ``}`
+        if (i === rolls.length-1) {
+            return
+        } else {
+            rollsStr += ', '
+        }
+      } else {
+        rollsTotal.push(r + parseInt(add))
+      }
     })
+    const finalArr = []
+    if (selectedStatus !== 'normal') {
+      for (let i = 0; i < rollsTotal.length; i+=2) {
+          const arr = [rollsTotal[i], rollsTotal[i+1]]
+          rollsStr += `[${rollsTotal[i]-parseInt(add)}${add ?` + ${add}` : ``}, ${rollsTotal[i+1]-parseInt(add)}${add ?` + ${add}` : ``}]`
+          if (i === rollsTotal.length-1 || i === rollsTotal.length-2) {
+              // do nothing
+          } else {
+              rollsStr += ', '
+          }
+          let final
+          if (selectedStatus === 'advantage') {
+              final = Math.max(...arr)
+          } else {
+              final = Math.min(...arr)
+          }
+          finalArr.push(final)
+      }
+      rollsTotal = finalArr
+    }
     rollsTotal = rollsTotal.join(', ')
+    rollsStr = rollsStr.trim()
     const rollData = {
       time,
       name: name.trim(),
       logic,
-      result: rollsTotal,
+      result: rollsStr,
+      total: rollsTotal
     }
     // setRolls is a temporary fix.
     // Eventually, we'll want to send the data to the backend,
