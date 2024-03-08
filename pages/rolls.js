@@ -3,6 +3,7 @@ import AdvantageDropdown from '../components/rolls/advantage';
 import RollsList from '@/components/rolls/rollsList';
 import database from '@/firebase';
 import { ref, onValue, child, push, update } from "firebase/database";
+import '../app/globals.css'
 
 export default function RollsHome() {
   const [selectedStatus, setSelectedStatus] = useState('normal');
@@ -17,7 +18,8 @@ export default function RollsHome() {
     const dbRef = ref(database, 'rolls');
     onValue(dbRef, snapshot => {
       const val = snapshot.val()
-      setRolls(val)
+      const sortedVal = Object.values(val || {}).sort((a, b) => b.timestamp - a.timestamp);
+      setRolls(sortedVal)
     }, error => {
       console.log('Error in onValue:', error)
     });
@@ -79,10 +81,11 @@ export default function RollsHome() {
   const sendToBackend = rollData => {
     // Get a key for a new Roll.
     const newRollKey = push(child(ref(database), 'rolls')).key;
+    const currentTime = Date.now()
 
     // Write the new roll's data in the rolls list.
     const updates = {};
-    updates['/rolls/' + newRollKey] = rollData;
+    updates['/rolls/' + newRollKey] = {data: rollData, timestamp: currentTime};
 
     return update(ref(database), updates);
   }
@@ -115,11 +118,11 @@ export default function RollsHome() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div id="rollBox" className='flex'>
-        <div id="topBar" className='flex'>
-          <div id="nameContainer">
-            <p>Name:</p>
+    <main className="flex p-24">
+      <div id="rollBox" className='flex flex-col w-full'>
+        <div id="topBar" className='flex justify-between'>
+          <div id="nameContainer" className='flex'>
+            <p className=''>Name:</p>
             <input 
               id='' 
               value={name} 
