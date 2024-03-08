@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AdvantageDropdown from '../components/rolls/advantage';
 import RollsList from '@/components/rolls/rollsList';
 import database from '@/firebase';
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, child, push, update } from "firebase/database";
 
 export default function RollsHome() {
   const [selectedStatus, setSelectedStatus] = useState('normal');
@@ -77,7 +77,14 @@ export default function RollsHome() {
   }
 
   const sendToBackend = rollData => {
-    
+    // Get a key for a new Roll.
+    const newRollKey = push(child(ref(database), 'rolls')).key;
+
+    // Write the new roll's data in the rolls list.
+    const updates = {};
+    updates['/rolls/' + newRollKey] = rollData;
+
+    return update(ref(database), updates);
   }
 
   const handleTime = () => {
