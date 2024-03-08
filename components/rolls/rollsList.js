@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function RollsList({ rolls }) {
-  console.log('rolls oh god', rolls)
   return (
     <div id="rollsList">
       {rolls && Object.values(rolls).length ? Object.values(rolls).map((roll) => (
