@@ -241,7 +241,7 @@ export default function RollsHome() {
     <main className="flex p-24">
       <div id="rollBox" className='flex flex-col w-full'>
         <div id="topBar" className='flex justify-between p-2 border'>
-          <div id="nameContainer" className='flex items-center'>
+          <div id="nameContainer" className='flex items-center' style={{ width: '410px' }}>
             <p>Name:</p>
             <input 
               id='' 
@@ -257,7 +257,7 @@ export default function RollsHome() {
               }
             </div>
           </div>
-          <div id="functionalityContainer" className='flex flex-row justify-between items-center'>
+          <div id="functionalityContainer" className='flex flex-row justify-between items-center overflow-x-auto'>
             <button onClick={handleQuick2} className='mx-2 px-4 py-1 border'>+2</button>
             <button onClick={handleQuick4} className='mx-2 px-4 py-1 border'>+4</button>
             <button onClick={handleQuick6} className='mx-2 px-4 py-1 border'>+6</button>
