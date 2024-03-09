@@ -1,34 +1,35 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-export default function RollsList({ rolls, setLazyLoad }) {
+export default function RollsList({ rolls, setLazyLoad, loadMoreRolls }) {
   const rollsListRef = useRef(null);
+  const [scrollLoad, setScrollLoad] = useState(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const element = rollsListRef.current;
-      if (element) {
-        const elementHeight = element.scrollHeight;
-        const scrollTop = element.scrollTop;
-        const elementVisibleHeight = element.clientHeight;
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const element = rollsListRef.current;
+  //     if (element) {
+  //       const elementHeight = element.scrollHeight;
+  //       const scrollTop = element.scrollTop;
+  //       const elementVisibleHeight = element.clientHeight;
 
-        const isNearBottom = scrollTop + elementVisibleHeight >= elementHeight - 50; // Adjust the threshold as needed
-        handleLazyLoad(isNearBottom)
-      }
-    };
+  //       const isNearBottom = scrollTop + elementVisibleHeight >= elementHeight - 50; // Adjust the threshold as needed
+  //       handleLazyLoad(isNearBottom)
+  //     }
+  //   };
 
-    // Attach the scroll event listener to the specified element
-    rollsListRef.current.addEventListener('scroll', handleScroll);
+  //   // Attach the scroll event listener to the specified element
+  //   rollsListRef.current.addEventListener('scroll', handleScroll);
 
-    return () => rollsListRef.current.removeEventListener('scroll', handleScroll);
-  }, []);
+  //   return () => rollsListRef.current.removeEventListener('scroll', handleScroll);
+  // }, []);
 
-  const handleLazyLoad = (bool) => {
-    console.log('bool', bool)
-    setLazyLoad(bool);
-  }
+  // const handleLazyLoad = (bool) => {
+  //   console.log('bool', bool)
+  //   setLazyLoad(bool);
+  // }
 
   return (
-    <div id="rollsList" ref={rollsListRef} className='border overflow-auto h-4/6'>
+    <div id="rollsList" ref={rollsListRef} className='border overflow-auto h-96'>
       {rolls && Object.values(rolls).length ? Object.values(rolls).map((roll) => (
         <div key={`${roll.data.time}${roll.data.name}`} className='flex border p-1 items-center'>
           <p className='min-w-fit'>{roll.data.time}</p>
@@ -37,6 +38,9 @@ export default function RollsList({ rolls, setLazyLoad }) {
           </p>
         </div>
       )) : <></>}
+      <div className='flex border p-1 items-center justify-center'>
+        <button onClick={loadMoreRolls}>Load More</button>
+      </div>
     </div>
   )
 }

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import AdvantageDropdown from '../components/rolls/advantage';
 import RollsList from '@/components/rolls/rollsList';
 import database from '@/firebase';
-import { ref, onValue, child, push, update, query, orderByChild, limitToLast, startAt } from "firebase/database";
+import { ref, onValue, get, child, push, update, query, orderByChild, limitToLast, limitToFirst, startAt, enableLogging } from "firebase/database";
 import '../app/globals.css'
 
 export default function RollsHome() {
@@ -18,18 +18,16 @@ export default function RollsHome() {
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
-    console.log('hit')
     const dbRef = ref(database, 'rolls')
     let sortedAndLimitedRef 
-    // todo: make sorting by timestamp work
     if (lastKey === 'unused') {
-      sortedAndLimitedRef = query(dbRef, limitToLast(50));
+      sortedAndLimitedRef = query(dbRef, limitToFirst(50));
     } else {
-      sortedAndLimitedRef = query(dbRef, startAt(lastKey), limitToLast(50))
+      sortedAndLimitedRef = query(dbRef, startAt(lastKey), limitToFirst(50))
     }
     onValue(sortedAndLimitedRef, snapshot => {
       const val = snapshot.val()
-      setRolls({...rolls, ...val})
+      setRolls({...val, ...rolls,})
       const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
       setLastKey(lastRetrievedKey)
     }, error => {
@@ -38,7 +36,26 @@ export default function RollsHome() {
     if (lazyLoad) {
       setLazyLoad(false)
     }
-  }, [lazyLoad]);
+  }, []); // the lazyload will have to be a new function, a singular get which appends the rolls to the bottom
+
+  // useEffect(() => {
+  //   const dbRef = ref(database, 'rolls')
+  //   let sortedAndLimitedRef = query(dbRef, startAt(lastKey), limitToFirst(50))
+  //   console.log('sortedAndLimitedRef', sortedAndLimitedRef)
+  //   get(sortedAndLimitedRef, snapshot => {
+  //     const val = snapshot.val()
+  //     console.log('val here', val)
+  //     setRolls({...rolls, ...val})
+  //     const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
+  //     setLastKey(lastRetrievedKey)
+  //   }, error => {
+  //     console.log('Error in onValue:', error)
+  //   });
+  //   console.log('lazyLoad', lazyLoad)
+  //   if (lazyLoad) {
+  //     setLazyLoad(false)
+  //   }
+  // }, [lazyLoad])
 
   const handleName = e => {
     setName(e.target.value);
@@ -53,10 +70,10 @@ export default function RollsHome() {
   }
 
   const handleAdd = e => {
-    setAdd(e.target.value);
+    setAdd(parseInt(e.target.value));
   }
 
-  const handleRoll = () => {
+  const handleRoll = (num) => {
     if (buttonDisabled) {
       return
     }
@@ -65,13 +82,19 @@ export default function RollsHome() {
       setErrors(['Please enter a name'])
       return console.log('Please enter a name')
     }
+    let locAdd
+    if (Number(num) && Number(num) !== NaN) {
+      locAdd = parseInt(num)
+    } else {
+      locAdd = add
+    }
     let locRolls = []
     let rollsStr = ''
     // have to account for adv and dis
     if (selectedStatus === 'normal') {
       for (let i = 0; i < parseInt(numberOfDice); i++) {
           let roll = Math.floor(Math.random() * parseInt(sides)) + 1
-          locRolls.push(roll + parseInt(add));
+          locRolls.push(roll + parseInt(locAdd));
       }
     } else {
       for (let i = 0; i < parseInt(numberOfDice); i++) {
@@ -83,26 +106,26 @@ export default function RollsHome() {
       }
     }
     const time = handleTime()
-    const logic = `${selectedStatus === 'advantage' ? `[Adv] ` : `${selectedStatus === `disadvantage` ? `[Dis] ` : ``}`}${numberOfDice}d${sides}${add != 0 ? ` + ${add}` : ``}`
+    const logic = `${selectedStatus === 'advantage' ? `[Adv] ` : `${selectedStatus === `disadvantage` ? `[Dis] ` : ``}`}${numberOfDice}d${sides}${locAdd != 0 ? ` + ${locAdd}` : ``}`
     let rollsTotal = [];
     locRolls.forEach((r, i) => {
       if (selectedStatus === 'normal') {
         rollsTotal.push(r)
-        rollsStr += `${r-parseInt(add)}${add ? ` + ${add}` : ``}`
+        rollsStr += `${r-parseInt(locAdd)}${locAdd ? ` + ${locAdd}` : ``}`
         if (i === rolls.length-1) {
             return
         } else {
             rollsStr += ', '
         }
       } else {
-        rollsTotal.push(r + parseInt(add))
+        rollsTotal.push(r + parseInt(locAdd))
       }
     })
     const finalArr = []
     if (selectedStatus !== 'normal') {
       for (let i = 0; i < rollsTotal.length; i+=2) {
           const arr = [rollsTotal[i], rollsTotal[i+1]]
-          rollsStr += `[${rollsTotal[i]-parseInt(add)}${add ?` + ${add}` : ``}, ${rollsTotal[i+1]-parseInt(add)}${add ?` + ${add}` : ``}]`
+          rollsStr += `[${rollsTotal[i]-parseInt(locAdd)}${locAdd ?` + ${locAdd}` : ``}, ${rollsTotal[i+1]-parseInt(locAdd)}${locAdd ?` + ${locAdd}` : ``}]`
           if (i === rollsTotal.length-1 || i === rollsTotal.length-2) {
               // do nothing
           } else {
@@ -139,10 +162,14 @@ export default function RollsHome() {
     const newRollKey = push(child(ref(database), 'rolls')).key;
     const currentTime = Date.now() * -1
 
-    // Write the new roll's data in the rolls list.
+    // initial key is an extremely large number. 
+    // This is a ticking time bomb that should explode in
+    // about 9 million years, assuming a very active guild
+    const biggestKey = Object.keys(rolls)[0].split('-')[0]
+    const parsedKey = parseInt(biggestKey)
+    const nextKey = parsedKey-1 
     const updates = {};
-    updates['/rolls/' + `${currentTime}${newRollKey}`] = {data: rollData, timestamp: currentTime};
-
+    updates['/rolls/' + `${nextKey}${newRollKey}`] = {data: rollData, timestamp: currentTime};
     return update(ref(database), updates);
   }
 
@@ -173,6 +200,43 @@ export default function RollsHome() {
     return `${month}/${day}/${year}, ${hour}:${minutes}:${seconds}`
   }
 
+  const handleQuick2 = () => {
+    handleRoll(2)
+  }
+
+  const handleQuick4 = () => {
+    handleRoll(4)
+  }
+
+  const handleQuick6 = () => {
+    handleRoll(6)
+  }
+
+  const loadMoreRolls = async () => {
+    const dbRef = ref(database, 'rolls')
+    console.log('lastKey', lastKey)
+    let sortedAndLimitedRef = query(dbRef, startAt(lastKey));
+    sortedAndLimitedRef = query(startAt(lastKey));
+    // let sortedAndLimitedRef = query(dbRef, startAt(lastKey), limitToFirst(50))
+    console.log('sortedAndLimitedRef', sortedAndLimitedRef)
+    try {
+      // const snapshot = await get(sortedAndLimitedRef)
+      const snapshot = await get(dbRef)
+      // get(sortedAndLimitedRef, snapshot => {
+        console.log('snapshot', snapshot)
+        const val = snapshot.val()
+        console.log('val here', val)
+        setRolls({...rolls, ...val})
+        const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
+        setLastKey(lastRetrievedKey)
+      // }, error => {
+      //   console.log('Error in onValue:', error)
+      // });
+    } catch(e) {
+      console.log('Error in onValue:', e)
+    }
+  }
+
   return (
     <main className="flex p-24">
       <div id="rollBox" className='flex flex-col w-full'>
@@ -194,6 +258,9 @@ export default function RollsHome() {
             </div>
           </div>
           <div id="functionalityContainer" className='flex flex-row justify-between items-center'>
+            <button onClick={handleQuick2} className='mx-2 px-4 py-1 border'>+2</button>
+            <button onClick={handleQuick4} className='mx-2 px-4 py-1 border'>+4</button>
+            <button onClick={handleQuick6} className='mx-2 px-4 py-1 border'>+6</button>
             <AdvantageDropdown selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
             <p>Roll:</p>
             <input 
@@ -229,7 +296,7 @@ export default function RollsHome() {
           </div>
         </div>
         <div id="rolls">
-          <RollsList rolls={rolls} setLazyLoad={setLazyLoad} />
+          <RollsList rolls={rolls} setLazyLoad={setLazyLoad} loadMoreRolls={loadMoreRolls} />
         </div>
       </div>
     </main>
