@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AdvantageDropdown from '../components/rolls/advantage';
 import RollsList from '@/components/rolls/rollsList';
 import database from '@/firebase';
-import { ref, onValue, child, push, update } from "firebase/database";
+import { ref, onValue, child, push, update, query, orderByChild, limitToLast, startAt } from "firebase/database";
 import '../app/globals.css'
 
 export default function RollsHome() {
@@ -12,19 +12,33 @@ export default function RollsHome() {
   const [sides, setSides] = useState(20)
   const [add, setAdd] = useState(0)
   const [rolls, setRolls] = useState({})
+  const [lastKey, setLastKey] = useState('unused')
   const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [lazyLoad, setLazyLoad] = useState(false)
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
-    const dbRef = ref(database, 'rolls');
-    onValue(dbRef, snapshot => {
+    console.log('hit')
+    const dbRef = ref(database, 'rolls')
+    let sortedAndLimitedRef 
+    // todo: make sorting by timestamp work
+    if (lastKey === 'unused') {
+      sortedAndLimitedRef = query(dbRef, limitToLast(50));
+    } else {
+      sortedAndLimitedRef = query(dbRef, startAt(lastKey), limitToLast(50))
+    }
+    onValue(sortedAndLimitedRef, snapshot => {
       const val = snapshot.val()
-      const sortedVal = Object.values(val || {}).sort((a, b) => b.timestamp - a.timestamp);
-      setRolls(sortedVal)
+      setRolls({...rolls, ...val})
+      const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
+      setLastKey(lastRetrievedKey)
     }, error => {
       console.log('Error in onValue:', error)
     });
-  }, []);
+    if (lazyLoad) {
+      setLazyLoad(false)
+    }
+  }, [lazyLoad]);
 
   const handleName = e => {
     setName(e.target.value);
@@ -123,11 +137,11 @@ export default function RollsHome() {
   const sendToBackend = rollData => {
     // Get a key for a new Roll.
     const newRollKey = push(child(ref(database), 'rolls')).key;
-    const currentTime = Date.now()
+    const currentTime = Date.now() * -1
 
     // Write the new roll's data in the rolls list.
     const updates = {};
-    updates['/rolls/' + newRollKey] = {data: rollData, timestamp: currentTime};
+    updates['/rolls/' + `${currentTime}${newRollKey}`] = {data: rollData, timestamp: currentTime};
 
     return update(ref(database), updates);
   }
@@ -215,7 +229,7 @@ export default function RollsHome() {
           </div>
         </div>
         <div id="rolls">
-          <RollsList rolls={rolls} />
+          <RollsList rolls={rolls} setLazyLoad={setLazyLoad} />
         </div>
       </div>
     </main>

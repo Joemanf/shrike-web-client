@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
-export default function RollsList({ rolls }) {
+export default function RollsList({ rolls, setLazyLoad }) {
+  const rollsListRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const element = rollsListRef.current;
+      if (element) {
+        const elementHeight = element.scrollHeight;
+        const scrollTop = element.scrollTop;
+        const elementVisibleHeight = element.clientHeight;
+
+        const isNearBottom = scrollTop + elementVisibleHeight >= elementHeight - 50; // Adjust the threshold as needed
+        handleLazyLoad(isNearBottom)
+      }
+    };
+
+    // Attach the scroll event listener to the specified element
+    rollsListRef.current.addEventListener('scroll', handleScroll);
+
+    return () => rollsListRef.current.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLazyLoad = (bool) => {
+    console.log('bool', bool)
+    setLazyLoad(bool);
+  }
+
   return (
-    <div id="rollsList" className='border overflow-auto h-4/6'>
+    <div id="rollsList" ref={rollsListRef} className='border overflow-auto h-4/6'>
       {rolls && Object.values(rolls).length ? Object.values(rolls).map((roll) => (
         <div key={`${roll.data.time}${roll.data.name}`} className='flex border p-1 items-center'>
           <p className='min-w-fit'>{roll.data.time}</p>
