@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 
-export default function RollsList({ rolls, setLazyLoad, loadMoreRolls }) {
+export default function RollsList({ rolls, loadMoreRolls }) {
   const rollsListRef = useRef(null);
 
   return (
