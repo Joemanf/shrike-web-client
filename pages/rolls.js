@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AdvantageDropdown from '../components/rolls/advantage';
 import RollsList from '@/components/rolls/rollsList';
+import Header from '@/components/overhead/header';
 import database from '@/firebase';
 import { ref, onValue, get, child, push, update, query, orderByChild, limitToLast, limitToFirst, startAt, enableLogging } from "firebase/database";
 import '../app/globals.css'
@@ -36,26 +37,7 @@ export default function RollsHome() {
     if (lazyLoad) {
       setLazyLoad(false)
     }
-  }, []); // the lazyload will have to be a new function, a singular get which appends the rolls to the bottom
-
-  // useEffect(() => {
-  //   const dbRef = ref(database, 'rolls')
-  //   let sortedAndLimitedRef = query(dbRef, startAt(lastKey), limitToFirst(50))
-  //   console.log('sortedAndLimitedRef', sortedAndLimitedRef)
-  //   get(sortedAndLimitedRef, snapshot => {
-  //     const val = snapshot.val()
-  //     console.log('val here', val)
-  //     setRolls({...rolls, ...val})
-  //     const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
-  //     setLastKey(lastRetrievedKey)
-  //   }, error => {
-  //     console.log('Error in onValue:', error)
-  //   });
-  //   console.log('lazyLoad', lazyLoad)
-  //   if (lazyLoad) {
-  //     setLazyLoad(false)
-  //   }
-  // }, [lazyLoad])
+  }, []);
 
   const handleName = e => {
     setName(e.target.value);
@@ -90,7 +72,6 @@ export default function RollsHome() {
     }
     let locRolls = []
     let rollsStr = ''
-    // have to account for adv and dis
     if (selectedStatus === 'normal') {
       for (let i = 0; i < parseInt(numberOfDice); i++) {
           let roll = Math.floor(Math.random() * parseInt(sides)) + 1
@@ -214,31 +195,22 @@ export default function RollsHome() {
 
   const loadMoreRolls = async () => {
     const dbRef = ref(database, 'rolls')
-    console.log('lastKey', lastKey)
     let sortedAndLimitedRef = query(dbRef, startAt(lastKey));
     sortedAndLimitedRef = query(startAt(lastKey));
-    // let sortedAndLimitedRef = query(dbRef, startAt(lastKey), limitToFirst(50))
-    console.log('sortedAndLimitedRef', sortedAndLimitedRef)
     try {
-      // const snapshot = await get(sortedAndLimitedRef)
       const snapshot = await get(dbRef)
-      // get(sortedAndLimitedRef, snapshot => {
-        console.log('snapshot', snapshot)
-        const val = snapshot.val()
-        console.log('val here', val)
-        setRolls({...rolls, ...val})
-        const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
-        setLastKey(lastRetrievedKey)
-      // }, error => {
-      //   console.log('Error in onValue:', error)
-      // });
+      const val = snapshot.val()
+      setRolls({...rolls, ...val})
+      const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
+      setLastKey(lastRetrievedKey)
     } catch(e) {
       console.log('Error in onValue:', e)
     }
   }
 
   return (
-    <main className="flex p-24">
+    <main className="px-24 py-6">
+      <Header />
       <div id="rollBox" className='flex flex-col w-full'>
         <div id="topBar" className='flex justify-between p-2 border'>
           <div id="nameContainer" className='flex items-center' style={{ width: '410px' }}>
