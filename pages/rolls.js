@@ -15,7 +15,6 @@ export default function RollsHome() {
   const [rolls, setRolls] = useState({})
   const [lastKey, setLastKey] = useState('unused')
   const [buttonDisabled, setButtonDisabled] = useState(false)
-  const [lazyLoad, setLazyLoad] = useState(false)
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
@@ -34,9 +33,6 @@ export default function RollsHome() {
     }, error => {
       console.log('Error in onValue:', error)
     });
-    if (lazyLoad) {
-      setLazyLoad(false)
-    }
   }, []);
 
   const handleName = e => {
@@ -268,7 +264,11 @@ export default function RollsHome() {
           </div>
         </div>
         <div id="rolls">
-          <RollsList rolls={rolls} setLazyLoad={setLazyLoad} loadMoreRolls={loadMoreRolls} />
+          <RollsList 
+            rolls={rolls} 
+            loadMoreRolls={loadMoreRolls} 
+            name={name} 
+          />
         </div>
       </div>
     </main>
