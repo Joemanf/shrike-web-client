@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import Image from "next/image";
 
-export default function Header({ rolls, loadMoreRolls }) {
+export default function Header() {
 
   return (
     // style={{ borderColor: '#0051C8' }}
