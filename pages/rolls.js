@@ -219,7 +219,7 @@ export default function RollsHome() {
             />
             <div>
               {errors.length ? errors.map(error => (
-                    <p className='text-red-500'>{error}</p>
+                    <p key={error} className='text-red-500'>{error}</p>
                   )
                 ) : <></>
               }
