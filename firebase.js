@@ -3,12 +3,12 @@ import { getDatabase } from "firebase/database";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCAN0DjVK3nUxAtrloudMgsc7Y6KEnMLNo",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "tots-rolling-backend.firebaseapp.com",
   projectId: "tots-rolling-backend",
   storageBucket: "tots-rolling-backend.appspot.com",
-  messagingSenderId: "252275554725",
-  appId: "1:252275554725:web:3c3066e89dc627613fd04c",
+  messagingSenderId: process.env.FIREBASE_MESSAGE_SENDER,
+  appId: process.env.FIREBASE_APP_ID,
   measurementId: "G-S018EELKQD",
   databaseURL: "https://tots-rolling-backend-default-rtdb.firebaseio.com/",
 };
