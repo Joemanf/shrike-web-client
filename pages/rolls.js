@@ -152,7 +152,7 @@ export default function RollsHome() {
 
   const handleTime = () => {
     const utcDate = new Date()
-    const estDate = new Date(utcDate.getTime() - 5 * 3600000)
+    const estDate = new Date(utcDate.getTime() - 1 * 3600000)
     let hour = estDate.getHours()
     let minutes = estDate.getMinutes()
     let seconds = estDate.getSeconds()
