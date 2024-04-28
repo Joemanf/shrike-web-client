@@ -14,6 +14,7 @@ export default function RollsHome() {
   const [add, setAdd] = useState(0)
   const [rolls, setRolls] = useState({})
   const [lastKey, setLastKey] = useState('unused')
+  const [loadThisMany, setLoadThisMany] = useState(100)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const [errors, setErrors] = useState([])
 
@@ -190,18 +191,15 @@ export default function RollsHome() {
   }
 
   const loadMoreRolls = async () => {
-    const dbRef = ref(database, 'rolls')
-    let sortedAndLimitedRef = query(dbRef, startAt(lastKey));
-    sortedAndLimitedRef = query(startAt(lastKey));
-    try {
-      const snapshot = await get(dbRef)
+    let dbRef = ref(database, 'rolls')
+    let sortedAndLimitedRef = query(dbRef, limitToFirst(loadThisMany));
+    onValue(sortedAndLimitedRef, snapshot => {
       const val = snapshot.val()
-      setRolls({...rolls, ...val})
-      const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
-      setLastKey(lastRetrievedKey)
-    } catch(e) {
-      console.log('Error in onValue:', e)
-    }
+      setRolls({...val, ...rolls,})
+      setLoadThisMany(loadThisMany+50)
+    }, error => {
+      console.log('Error in loadMoreRolls:', error)
+    });
   }
 
   return (
