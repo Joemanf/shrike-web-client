@@ -178,6 +178,10 @@ export default function RollsHome() {
     return `${month}/${day}/${year}, ${hour}:${minutes}:${seconds}`
   }
 
+  const handleQuick0 = () => {
+    handleRoll(0)
+  }
+
   const handleQuick2 = () => {
     handleRoll(2)
   }
@@ -224,6 +228,7 @@ export default function RollsHome() {
             </div>
           </div>
           <div id="functionalityContainer" className='flex flex-row justify-between items-center overflow-x-auto'>
+          <button onClick={handleQuick0} className='mx-2 px-4 py-1 border'>+0</button>
             <button onClick={handleQuick2} className='mx-2 px-4 py-1 border'>+2</button>
             <button onClick={handleQuick4} className='mx-2 px-4 py-1 border'>+4</button>
             <button onClick={handleQuick6} className='mx-2 px-4 py-1 border'>+6</button>
