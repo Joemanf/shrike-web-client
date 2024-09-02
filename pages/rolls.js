@@ -256,10 +256,11 @@ export default function RollsHome() {
       <div id="rollBox" className='flex flex-col w-full'>
         <div id="topBar" className='flex justify-between p-2 border'>
           <div id="nameContainer" className='flex items-center' style={{ width: '465px' }}>
-            <p>Name:</p>
+            {/* <p>Name:</p> */}
             <input 
               id='' 
               value={name} 
+              placeholder='Name'
               onChange={handleName} 
               className='bg-transparent border mx-2 px-2 py-1'
             />
