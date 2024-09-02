@@ -5,17 +5,21 @@ import Header from '@/components/overhead/header';
 import database from '@/firebase';
 import { ref, onValue, get, child, push, update, query, orderByChild, limitToLast, limitToFirst, startAt, enableLogging } from "firebase/database";
 import '../app/globals.css'
+import Image from 'next/image'
 
 export default function RollsHome() {
   const [selectedStatus, setSelectedStatus] = useState('normal');
   const [name, setName] = useState('')
+  const [filter, setFilter] = useState('')
   const [numberOfDice, setNumberOfDice] = useState(1)
   const [sides, setSides] = useState(20)
   const [add, setAdd] = useState(0)
   const [rolls, setRolls] = useState({})
+  const [filteredRolls, setFilteredRolls] = useState({})
   const [lastKey, setLastKey] = useState('unused')
   const [loadThisMany, setLoadThisMany] = useState(100)
   const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [filterOpen, setFilterOpen] = useState(false)
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
@@ -29,12 +33,22 @@ export default function RollsHome() {
     onValue(sortedAndLimitedRef, snapshot => {
       const val = snapshot.val()
       setRolls({...val, ...rolls,})
+      filterRolls({...val, ...rolls,})
       const lastRetrievedKey = snapshot.val() ? Object.keys(snapshot.val()).pop() : null;
       setLastKey(lastRetrievedKey)
     }, error => {
       console.log('Error in onValue:', error)
     });
   }, []);
+
+  useEffect(() => {
+    setFilteredRolls(rolls)
+    filterRolls(rolls)
+  }, [filter])
+
+  const handleFilter = e => {
+    setFilter(e.target.value);
+  }
 
   const handleName = e => {
     setName(e.target.value);
@@ -50,6 +64,18 @@ export default function RollsHome() {
 
   const handleAdd = e => {
     setAdd(parseInt(e.target.value));
+  }
+
+  const filterRolls = (rollsLoc) => {
+    const rollsTemp = {...rollsLoc}
+    if (filter.length) {
+      for (let key in rollsTemp) {
+        if (!rollsTemp[key].data.name.toLowerCase().includes(filter.toLowerCase())) {
+          delete rollsTemp[key]
+        }
+      }
+    }
+    setFilteredRolls(rollsTemp)
   }
 
   const handleRoll = (num) => {
@@ -195,12 +221,17 @@ export default function RollsHome() {
     handleRoll(6)
   }
 
+  const handleFilterOpen = () => {
+    setFilterOpen(!filterOpen)
+  }
+
   const loadMoreRolls = async () => {
     let dbRef = ref(database, 'rolls')
     let sortedAndLimitedRef = query(dbRef, limitToFirst(loadThisMany));
     onValue(sortedAndLimitedRef, snapshot => {
       const val = snapshot.val()
       setRolls({...val, ...rolls,})
+      filterRolls({...val, ...rolls,})
       setLoadThisMany(loadThisMany+50)
     }, error => {
       console.log('Error in loadMoreRolls:', error)
@@ -210,9 +241,21 @@ export default function RollsHome() {
   return (
     <main className="px-24 py-6">
       <Header />
+        {
+          filterOpen && 
+          <div id='filterBar' className=''>
+            <input 
+              value={filter} 
+              onChange={handleFilter} 
+              placeholder='Filter'
+              className='bg-transparent border px-2 py-1'
+              style={{position: 'absolute', top: '47%', left: '15%'}}
+            />
+          </div>
+        }
       <div id="rollBox" className='flex flex-col w-full'>
         <div id="topBar" className='flex justify-between p-2 border'>
-          <div id="nameContainer" className='flex items-center' style={{ width: '410px' }}>
+          <div id="nameContainer" className='flex items-center' style={{ width: '465px' }}>
             <p>Name:</p>
             <input 
               id='' 
@@ -220,6 +263,13 @@ export default function RollsHome() {
               onChange={handleName} 
               className='bg-transparent border mx-2 px-2 py-1'
             />
+            <button onClick={handleFilterOpen} className='mx-2 px-2 py-1 border'>
+              <Image 
+                src="/filter-white.png"
+                width={25} 
+                height={25} 
+              />
+            </button>
             <div>
               {errors.length ? errors.map(error => (
                     <p key={error} className='text-red-500'>{error}</p>
@@ -269,7 +319,7 @@ export default function RollsHome() {
         </div>
         <div id="rolls">
           <RollsList 
-            rolls={rolls} 
+            rolls={filteredRolls} 
             loadMoreRolls={loadMoreRolls} 
             name={name} 
           />
