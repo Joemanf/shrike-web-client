@@ -130,6 +130,7 @@ export default function RollsHome() {
     }
     sendToBackend(rollData)
     setButtonDisabled(true)
+    setSelectedStatus('normal')
     setTimeout(() => {
       setButtonDisabled(false)
     }, 1000)
