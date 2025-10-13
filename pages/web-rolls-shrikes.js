@@ -23,9 +23,6 @@ export default function RollsHome() {
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
-    // Database name needs to change, perhaps
-    // No wait maybe we gotta put it in a new database
-    // sendToBackend
     const dbRef = ref(database, 'rolls')
     let sortedAndLimitedRef 
     if (lastKey === 'unused') {
@@ -183,10 +180,9 @@ export default function RollsHome() {
     const others = {}
     let dateStr
     let updateDouble = false
-    let noHit = false
     onValue(db, async snapshot => {
       try {
-        const val = snapshot.val()
+        const val = await snapshot.val()
         console.log(Object.keys(val).length) // Just to see how much is in the normal DB
         if (Object.keys(val).length >= 550) {
           updateDouble = true
@@ -207,29 +203,32 @@ export default function RollsHome() {
     }, error => {
       console.log('Error in onValue sendToBackend:', error)
     });
-    try {
-      if (updateDouble) {
-          first500[`${nextKey}${newRollKey}`] = {data: rollData, timestamp: currentTime};
-          const current = new Date(Date.now())
-          const month = current.getMonth()
-          const day = current.getDate()
-          const year = current.getYear()
-          const hours = current.getHours()
-          const minutes = current.getMinutes()
-          const seconds = current.getSeconds()
-          dateStr = `${month}-${day}-${year}-${hours}-${minutes}-${seconds}`
-          updates[`/rolls${currentTime}-${dateStr}/`] = others;
-          noHit = true
+    setTimeout(async () => {
+      try {
+        if (updateDouble) {
+            first500[`${nextKey}${newRollKey}`] = {data: rollData, timestamp: currentTime};
+            const current = new Date(Date.now())
+            const month = current.getMonth()
+            const day = current.getDate()
+            const year = current.getYear()
+            const hours = current.getHours()
+            const minutes = current.getMinutes()
+            const seconds = current.getSeconds()
+            dateStr = `${month}-${day}-${year}-${hours}-${minutes}-${seconds}`
+            updates[`/rolls${currentTime}-${dateStr}/`] = others;
+            noHit = true
+            await update(ref(database), updates);
+            updates[`/rolls/`] = first500;
+            await update(ref(database), updates);
+        } else {
           await update(ref(database), updates);
-          updates[`/rolls/`] = first500;
-          await update(ref(database), updates);
-      } else {
-        await update(ref(database), updates);
+        }
+      } catch(e) {
+        console.log('Error in onValue sendToBackend (Top):', e)
+        updateDouble = false
       }
-    } catch(e) {
-      console.log('Error in onValue sendToBackend (Top):', e)
-      updateDouble = false
-    }
+    }, 100)
+
   }
 
   const handleTime = () => {
