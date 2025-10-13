@@ -6,6 +6,7 @@ import database from '@/firebase';
 import { ref, onValue, get, child, push, update, query, orderByChild, limitToLast, limitToFirst, startAt, enableLogging } from "firebase/database";
 import '../app/globals.css'
 import Image from 'next/image'
+import { resolve } from 'styled-jsx/css';
 
 export default function RollsHome() {
   const [selectedStatus, setSelectedStatus] = useState('normal');
@@ -173,61 +174,69 @@ export default function RollsHome() {
     const biggestKey = Object.keys(rolls)[0].split('-')[0]
     const parsedKey = parseInt(biggestKey)
     const nextKey = parsedKey-1 
-    const updates = {};
     const dbRef = ref(database, 'rolls')
     const db = query(dbRef)
-    const first500 = {}
-    const others = {}
+    let updates = {}
+    let first500 = {}
+    let others = {}
     let dateStr
     let updateDouble = false
-    onValue(db, async snapshot => {
-      try {
-        const val = await snapshot.val()
-        console.log(Object.keys(val).length) // Just to see how much is in the normal DB
-        if (Object.keys(val).length >= 550) {
-          updateDouble = true
-          for (let key in val) {
-            const mili = parseInt(key.split('-')[0])
-            if (mili <= nextKey+500) {
-              first500[key] = val[key]
-            } else {
-              others[key] = val[key]
+    const snapshotData = await new Promise((resolve, reject) => {
+      onValue(db, snapshot => {
+        try {
+          const val = snapshot.val()
+          const pupdates = {};
+          const pfirst500 = {}
+          const pothers = {}
+          console.log(Object.keys(val).length) // Just to see how much is in the normal DB
+          if (Object.keys(val).length >= 550) {
+            updateDouble = true
+            for (let key in val) {
+              const mili = parseInt(key.split('-')[0])
+              if (mili <= nextKey+500) {
+                pfirst500[key] = val[key]
+              } else {
+                pothers[key] = val[key]
+              }
             }
+          } else {
+            pupdates['/rolls/' + `${nextKey}${newRollKey}`] = {data: rollData, timestamp: currentTime};
           }
-        } else {
-          updates['/rolls/' + `${nextKey}${newRollKey}`] = {data: rollData, timestamp: currentTime};
+          resolve({pfirst500, pothers, pupdates})
+        } catch(e) {
+          console.log('Error in onValue sendToBackend (Internal):', e)
         }
-      } catch(e) {
-        console.log('Error in onValue sendToBackend (Internal):', e)
-      }
-    }, error => {
-      console.log('Error in onValue sendToBackend:', error)
-    });
-    setTimeout(async () => {
-      try {
-        if (updateDouble) {
-            first500[`${nextKey}${newRollKey}`] = {data: rollData, timestamp: currentTime};
-            const current = new Date(Date.now())
-            const month = current.getMonth()
-            const day = current.getDate()
-            const year = current.getYear()
-            const hours = current.getHours()
-            const minutes = current.getMinutes()
-            const seconds = current.getSeconds()
-            dateStr = `${month}-${day}-${year}-${hours}-${minutes}-${seconds}`
-            updates[`/rolls${currentTime}-${dateStr}/`] = others;
-            noHit = true
-            await update(ref(database), updates);
-            updates[`/rolls/`] = first500;
-            await update(ref(database), updates);
-        } else {
+      }, error => {
+        console.log('Error in onValue sendToBackend:', error)
+      });
+    }, e => {
+      reject(e)
+    })
+    updates = snapshotData.pupdates
+    first500 = snapshotData.pfirst500
+    others = snapshotData.pothers
+    try {
+      if (updateDouble) {
+          first500[`${nextKey}${newRollKey}`] = {data: rollData, timestamp: currentTime};
+          const current = new Date(Date.now())
+          const month = current.getMonth()
+          const day = current.getDate()
+          const year = current.getYear()
+          const hours = current.getHours()
+          const minutes = current.getMinutes()
+          const seconds = current.getSeconds()
+          dateStr = `${month}-${day}-${year}-${hours}-${minutes}-${seconds}`
+          updates[`/rolls${currentTime}-${dateStr}/`] = others;
           await update(ref(database), updates);
-        }
-      } catch(e) {
-        console.log('Error in onValue sendToBackend (Top):', e)
-        updateDouble = false
+          updates[`/rolls/`] = first500;
+          await update(ref(database), updates);
+      } else {
+        await update(ref(database), updates);
       }
-    }, 100)
+    } catch(e) {
+      console.log('Error in onValue sendToBackend (Top):', e)
+      updateDouble = false
+    }
 
   }
 
