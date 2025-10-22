@@ -7,9 +7,11 @@ import { ref, onValue, get, child, push, update, query, orderByChild, limitToLas
 import '../app/globals.css'
 import Image from 'next/image'
 import { resolve } from 'styled-jsx/css';
+import NavBar from '@/components/overhead/navbar';
 
 export default function RollsHome() {
   const [selectedStatus, setSelectedStatus] = useState('normal');
+  const [theme, setTheme] = useState('simple');
   const [name, setName] = useState('')
   const [filter, setFilter] = useState('')
   const [numberOfDice, setNumberOfDice] = useState(1)
@@ -301,7 +303,8 @@ export default function RollsHome() {
   }
 
   return (
-    <main className="px-24 py-6">
+    <main className="">
+      <NavBar theme={theme} setTheme={setTheme} />
       <Header />
         {
           filterOpen && 
@@ -315,7 +318,7 @@ export default function RollsHome() {
             />
           </div>
         }
-      <div id="rollBox" className='flex flex-col w-full'>
+      <div id="rollBox" className='flex flex-col w-full px-24 py-6'>
         <div id="topBar" className='flex justify-between p-2 border'>
           <div id="nameContainer" className='flex items-center' style={{ width: '465px' }}>
             {/* <p>Name:</p> */}
