@@ -9,7 +9,7 @@ export default function NavBar({ theme, setTheme }) {
 
   const options = [
     { value: 'simple', label: 'Simple', primary: '#161616', secondary: '#4F4F4F', tertiary: '#FFFFFF' },
-    { value: 'aerieNights', label: 'Aerie Nights', primary: '#000000', secondary: '#162347', tertiary: '#FFFFFF' },
+    // { value: 'aerieNights', label: 'Aerie Nights', primary: '#000000', secondary: '#162347', tertiary: '#FFFFFF' },
     { value: 'agents', label: 'Agents of the Moon', primary: '#321010', secondary: '#612121', tertiary: '#85BBEE' },
     { value: 'keepers', label: 'Keepers of the Sun', primary: '#6C0B0B', secondary: '#A05200', tertiary: '#F7FFAC' },
     { value: 'sentinels', label: 'Sentinels', primary: '#1C0F52', secondary: '#5A5F82', tertiary: '#F3FBFF' },
