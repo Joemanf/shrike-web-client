@@ -14,7 +14,7 @@ export default function Header({theme}) {
                 height={250}
             />
         </div>
-        <h1 className='text-center text-5xl pb-12'>The Thorns of the Shrike</h1>
+        <h1 className='text-center text-5xl pb-12'>Thorns of the Shrike</h1>
     </div>
   )
 }
