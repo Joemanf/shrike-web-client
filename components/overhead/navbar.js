@@ -1,6 +1,9 @@
 import React from 'react';
 import Image from "next/image";
 import Select, { components } from 'react-select'
+import '../../styles/base.css'
+import PaletteIcon from '../../public/Palette-2.svg'
+import SettingsIcon from '../../public/Setting.svg'
 
 export default function NavBar({ theme, setTheme }) {
 
@@ -17,14 +20,18 @@ export default function NavBar({ theme, setTheme }) {
   const SingleValueWithIcon = (props) => (
     <components.SingleValue {...props}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {/* <PaletteIcon /> */}
-        <Image
+        <PaletteIcon 
+          stroke={theme.tertiary}
+          // fill={theme.tertiary}
+          className="mr-2"
+        />
+        {/* <Image
           src="/Palette.svg"
           alt="Palette"
           className="dark:invert mr-2"
           width={22}
           height={15}
-        />
+        /> */}
         {props.children}
       </div>
     </components.SingleValue>
@@ -35,12 +42,50 @@ export default function NavBar({ theme, setTheme }) {
     localStorage.setItem('userTheme', JSON.stringify(e));
   };
 
+  const customStyles = {
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused 
+        ? '#444444'  // When hovering/focused
+        : state.isSelected 
+          ? '#333333'  // When selected
+          : theme.secondary,
+      color: theme.tertiary,
+      cursor: 'pointer',
+      transition: 'background-color 0.1s ease'
+    }),
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: theme.secondary,
+      color: theme.tertiary,
+      cursor: 'pointer',
+    }),
+    menu: (base, state) => ({
+      ...base,
+      backgroundColor: theme.secondary, 
+      color: theme.tertiary,
+      cursor: 'pointer',
+    }),
+    placeholder: (base, state) => ({
+      ...base,
+      backgroundColor: theme.secondary, 
+      color: theme.tertiary,
+      cursor: 'pointer',
+    }),
+    singleValue: (base, state) => ({
+      ...base,
+      backgroundColor: theme.secondary, 
+      color: theme.tertiary,
+      cursor: 'pointer',
+    }),
+  };
+
   return (
-    <div id="navbar" style={{ borderBottom: '1px solid white' }} className='p-2 mb-8 flex justify-between'>
+    <div id="navbar" style={{ borderBottom: `1px solid ${theme.tertiary}` }} className='p-2 mb-8 flex justify-between'>
         <div className=''>
           <p>TotS</p>
         </div>
-        <div className='flex'>
+        <div className='flex items-center'>
           {/* <a>Link 1</a> */}
           {/* <a>Link 2</a> */}
           {/* <a>Link 3</a> */}
@@ -49,20 +94,24 @@ export default function NavBar({ theme, setTheme }) {
               id="themesDropdown" 
               value={theme} 
               onChange={handleThemeChange}
-              className='mx-4'
+              className={`mx-4 input-${theme.value}`}
               options={options}
               components={{
                 SingleValue: SingleValueWithIcon
               }}
-              classNames={{
-                control: () => 'bg-gray-500 text-white',
-                option: () => 'bg-gray-400 text-white',
-                menu: () => 'bg-gray-500 text-white'
-              }}
+              styles={customStyles}
             >
             </Select>
           </div>
-          <div>Settings</div>
+          <div>
+            <SettingsIcon 
+              style={{ width: '19px', height: '20px', }}
+              stroke={theme.tertiary}
+              fill={theme.tertiary}
+              viewBox="0 0 19 20"
+              className="mr-2"
+            />
+          </div>
         </div>
         {/* <h1 className='text-center text-5xl pb-12'>Thorns of the Shrike</h1> */}
     </div>

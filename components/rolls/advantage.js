@@ -6,7 +6,7 @@ const options = [
   { value: 'disadvantage', label: 'Disadvantage' },
 ];
 
-export default function AdvantageDropdown({ selectedStatus, setSelectedStatus }) {
+export default function AdvantageDropdown({ selectedStatus, setSelectedStatus, theme }) {
   const handleStatusChange = e => {
     setSelectedStatus(e.target.value);
   };
@@ -16,7 +16,8 @@ export default function AdvantageDropdown({ selectedStatus, setSelectedStatus })
       id="advantageDropdown" 
       value={selectedStatus} 
       onChange={handleStatusChange}
-      className='bg-transparent border mx-2'
+      className='bg-transparent border mx-2 p-1 pl-2'
+      style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
     >
       {options.map((option) => (
         <option 
