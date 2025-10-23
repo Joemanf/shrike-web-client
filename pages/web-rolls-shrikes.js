@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react';
 import AdvantageDropdown from '../components/rolls/advantage';
 import RollsList from '@/components/rolls/rollsList';
 import Header from '@/components/overhead/header';
+import NavBar from '@/components/overhead/navbar';
 import database from '@/firebase';
-import { ref, onValue, get, child, push, update, query, orderByChild, limitToLast, limitToFirst, startAt, enableLogging } from "firebase/database";
+import { ref, onValue, child, push, update, query, limitToFirst, startAt } from "firebase/database";
 import '../app/globals.css'
 import Image from 'next/image'
-import { resolve } from 'styled-jsx/css';
-import NavBar from '@/components/overhead/navbar';
 
 export default function RollsHome() {
   const [selectedStatus, setSelectedStatus] = useState('normal');
-  const [theme, setTheme] = useState('simple');
+  const [theme, setTheme] = useState({ value: 'simple', label: 'Simple', primary: '#161616', secondary: '#4F4F4F', tertiary: '#FFFFFF' });
   const [name, setName] = useState('')
   const [filter, setFilter] = useState('')
   const [numberOfDice, setNumberOfDice] = useState(1)
@@ -26,6 +25,10 @@ export default function RollsHome() {
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
+    console.log('localStorage', localStorage.userTheme)
+    if (localStorage?.userTheme) {
+      setTheme(JSON.parse(localStorage.userTheme))
+    }
     const dbRef = ref(database, 'rolls')
     let sortedAndLimitedRef 
     if (lastKey === 'unused') {
@@ -269,22 +272,6 @@ export default function RollsHome() {
     return `${month}/${day}/${year}, ${hour}:${minutes}:${seconds}`
   }
 
-  const handleQuick0 = () => {
-    handleRoll(0)
-  }
-
-  const handleQuick2 = () => {
-    handleRoll(2)
-  }
-
-  const handleQuick4 = () => {
-    handleRoll(4)
-  }
-
-  const handleQuick6 = () => {
-    handleRoll(6)
-  }
-
   const handleFilterOpen = () => {
     setFilterOpen(!filterOpen)
   }
@@ -303,7 +290,7 @@ export default function RollsHome() {
   }
 
   return (
-    <main className="">
+    <main className="" style={{backgroundColor: theme.primary}}>
       <NavBar theme={theme} setTheme={setTheme} />
       <Header />
         {
@@ -345,10 +332,10 @@ export default function RollsHome() {
             </div>
           </div>
           <div id="functionalityContainer" className='flex flex-row justify-between items-center overflow-x-auto'>
-            <button onClick={handleQuick0} className='mx-2 px-4 py-1 border'>+0</button>
-            <button onClick={handleQuick2} className='mx-2 px-4 py-1 border'>+2</button>
-            <button onClick={handleQuick4} className='mx-2 px-4 py-1 border'>+4</button>
-            <button onClick={handleQuick6} className='mx-2 px-4 py-1 border'>+6</button>
+            <button onClick={() => handleRoll(0)} className='mx-2 px-4 py-1 border'>+0</button>
+            <button onClick={() => handleRoll(2)} className='mx-2 px-4 py-1 border'>+2</button>
+            <button onClick={() => handleRoll(4)} className='mx-2 px-4 py-1 border'>+4</button>
+            <button onClick={() => handleRoll(6)} className='mx-2 px-4 py-1 border'>+6</button>
             <AdvantageDropdown selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
             <p>Roll:</p>
             <input 
