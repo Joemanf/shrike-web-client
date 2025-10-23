@@ -8,8 +8,8 @@ export default function Header() {
     <div id="header" className='border mx-48 mb-12 mt-2'>
         <div className='flex justify-center p-6'>
             <Image
-                src="/Shrike_Coin_2.png"
-                alt="Shrike Coin"
+                src="/Bird_2.svg"
+                alt="Shrike"
                 width={250}
                 height={250}
             />
