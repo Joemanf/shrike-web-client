@@ -26,7 +26,6 @@ export default function RollsHome() {
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
-    console.log('localStorage', localStorage.userTheme)
     if (localStorage?.userTheme) {
       setTheme(JSON.parse(localStorage.userTheme))
     }
@@ -380,6 +379,12 @@ export default function RollsHome() {
           </div>
         </div>
         <div id="rolls">
+          <div className='flex border items-center' style={{border: `1px solid ${theme.tertiary}`}}>
+            <p className='p-1 pr-2 min-w-fit' style={{backgroundColor: theme.primary, width: '10rem'}}>Date/Time</p>
+            <p className='p-1 pl-2 border-l min-h-full'>
+              Rolls
+            </p>
+          </div>
           <RollsList 
             rolls={filteredRolls} 
             loadMoreRolls={loadMoreRolls} 
