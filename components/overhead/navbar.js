@@ -8,13 +8,13 @@ import SettingsIcon from '../../public/Setting.svg'
 export default function NavBar({ theme, setTheme }) {
 
   const options = [
-    { value: 'simple', label: 'Simple', primary: '#161616', secondary: '#4F4F4F', tertiary: '#FFFFFF' },
-    // { value: 'aerieNights', label: 'Aerie Nights', primary: '#000000', secondary: '#162347', tertiary: '#FFFFFF' },
-    { value: 'agents', label: 'Agents of the Moon', primary: '#321010', secondary: '#612121', tertiary: '#85BBEE' },
-    { value: 'keepers', label: 'Keepers of the Sun', primary: '#6C0B0B', secondary: '#A05200', tertiary: '#F7FFAC' },
-    { value: 'sentinels', label: 'Sentinels', primary: '#1C0F52', secondary: '#5A5F82', tertiary: '#F3FBFF' },
-    { value: 'vipers', label: 'Vipers', primary: '#2B3F2C', secondary: '#311D1D', tertiary: '#83FF7F' },
-    { value: 'purple', label: 'Purple', primary: '#3B2452', secondary: '#846F94', tertiary: '#FFFFFF' },
+    { value: 'simple', label: 'Simple', primary: '#161616', secondary: '#4F4F4F', tertiary: '#FFFFFF', backgroundImage: null, },
+    { value: 'aerieNights', label: 'Aerie Nights', primary: '#000000', secondary: '#162347', tertiary: '#FFFFFF', backgroundImage: '/lighthouseblurred_1.png', },
+    { value: 'agents', label: 'Agents of the Moon', primary: '#321010', secondary: '#612121', tertiary: '#85BBEE', backgroundImage: null, },
+    { value: 'keepers', label: 'Keepers of the Sun', primary: '#6C0B0B', secondary: '#A05200', tertiary: '#F7FFAC', backgroundImage: null, },
+    { value: 'sentinels', label: 'Sentinels', primary: '#1C0F52', secondary: '#5A5F82', tertiary: '#F3FBFF', backgroundImage: null, },
+    { value: 'vipers', label: 'Vipers', primary: '#2B3F2C', secondary: '#311D1D', tertiary: '#83FF7F', backgroundImage: null, },
+    { value: 'purple', label: 'Purple', primary: '#3B2452', secondary: '#846F94', tertiary: '#FFFFFF', backgroundImage: null, },
   ];
 
   const SingleValueWithIcon = (props) => (

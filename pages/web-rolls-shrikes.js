@@ -290,7 +290,21 @@ export default function RollsHome() {
   }
 
   return (
-    <main className="" style={{backgroundColor: theme.primary, color: theme.tertiary, height: '100vh'}}>
+    <main 
+      className="" 
+      style={{
+        backgroundColor: theme.primary, 
+        color: theme.tertiary, 
+        height: '100vh',
+        ...(theme.backgroundImage && {
+          backgroundImage: `url(${theme.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        })
+      }}
+    >
       <NavBar theme={theme} setTheme={setTheme} />
       <Header theme={theme} />
         {
@@ -305,10 +319,10 @@ export default function RollsHome() {
             />
           </div>
         }
-      <div id="rollBox" className='flex px-24 pl-44 justify-center ' style={{ backgroundColor: theme.primary }}>
+      <div id="rollBox" className='flex px-24 pl-44 justify-center ' style={{ backgroundColor: (theme.backgroundImage ? '' : theme.primary) }}>
         <div id="rolls" className=''>
           <div className='flex rounded-tl items-center' style={{border: `2px solid ${theme.tertiary}`}}>
-            <p className='p-1 pr-2 min-w-fit' style={{backgroundColor: theme.primary, width: '10rem'}}>Date/Time</p>
+            <p className='p-1 pr-2 min-w-fit' style={{backgroundColor: (theme.backgroundImage ? '' : theme.primary), width: '10rem'}}>Date/Time</p>
             <p className='p-1 pl-2 border-l min-h-full'>Rolls</p>
           </div>
           <RollsList 
