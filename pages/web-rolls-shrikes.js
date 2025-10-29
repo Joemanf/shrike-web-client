@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import AdvantageDropdown from '../components/rolls/advantage';
 import RollsList from '@/components/rolls/rollsList';
 import Header from '@/components/overhead/header';
 import NavBar from '@/components/overhead/navbar';
@@ -7,7 +6,6 @@ import database from '@/firebase';
 import { ref, onValue, child, push, update, query, limitToFirst, startAt } from "firebase/database";
 import '../app/globals.css'
 import '../styles/base.css'
-import Image from 'next/image'
 import QuickRolls from '@/components/rolls/quickRolls';
 import RollsFunctionality from '@/components/rolls/rollsFunctionality';
 
