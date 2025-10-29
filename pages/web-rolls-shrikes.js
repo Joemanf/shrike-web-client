@@ -303,13 +303,13 @@ export default function RollsHome() {
               onChange={handleFilter} 
               placeholder='Filter'
               className='bg-transparent border px-2 py-1'
-              style={{position: 'absolute', top: '47%', left: '15%', border: `1px solid ${theme.tertiary}`}}
+              style={{position: 'absolute', top: '47%', left: '15%', border: `2px solid ${theme.tertiary}`}}
             />
           </div>
         }
       <div id="rollBox" className='flex px-24 pl-44 justify-center ' style={{ backgroundColor: theme.primary }}>
         <div id="rolls" className=''>
-          <div className='flex rounded-tl items-center' style={{border: `1px solid ${theme.tertiary}`}}>
+          <div className='flex rounded-tl items-center' style={{border: `2px solid ${theme.tertiary}`}}>
             <p className='p-1 pr-2 min-w-fit' style={{backgroundColor: theme.primary, width: '10rem'}}>Date/Time</p>
             <p className='p-1 pl-2 border-l min-h-full'>Rolls</p>
           </div>
@@ -346,7 +346,7 @@ export default function RollsHome() {
 
 // Filter is in here
 
-        {/* <div id="topBar" className='flex justify-between p-2 border' style={{border: `1px solid ${theme.tertiary}`}}>
+        {/* <div id="topBar" className='flex justify-between p-2 border' style={{border: `2px solid ${theme.tertiary}`}}>
           <div id="nameContainer" className='flex items-center' style={{ width: '465px' }}>
             <input 
               id='' 
@@ -354,9 +354,9 @@ export default function RollsHome() {
               placeholder='Name'
               onChange={handleName} 
               className={`bg-transparent border mx-2 px-2 py-1 input-${theme.value}`}
-              style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary, placeholder: theme.secondary}}
+              style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary, placeholder: theme.secondary}}
             />
-            <button onClick={handleFilterOpen} className='mx-2 px-2 py-1 border' style={{border: `1px solid ${theme.tertiary}`}}>
+            <button onClick={handleFilterOpen} className='mx-2 px-2 py-1 border' style={{border: `2px solid ${theme.tertiary}`}}>
               <Image 
                 src="/filter-white.png"
                 width={25} 
@@ -372,10 +372,10 @@ export default function RollsHome() {
             </div>
           </div>
           <div id="functionalityContainer" className='flex flex-row justify-between items-center overflow-x-auto'>
-            <button onClick={() => handleRoll(0)} className='mx-2 px-4 py-1 border' style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+0</button>
-            <button onClick={() => handleRoll(2)} className='mx-2 px-4 py-1 border' style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+2</button>
-            <button onClick={() => handleRoll(4)} className='mx-2 px-4 py-1 border' style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+4</button>
-            <button onClick={() => handleRoll(6)} className='mx-2 px-4 py-1 border' style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+6</button>
+            <button onClick={() => handleRoll(0)} className='mx-2 px-4 py-1 border' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+0</button>
+            <button onClick={() => handleRoll(2)} className='mx-2 px-4 py-1 border' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+2</button>
+            <button onClick={() => handleRoll(4)} className='mx-2 px-4 py-1 border' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+4</button>
+            <button onClick={() => handleRoll(6)} className='mx-2 px-4 py-1 border' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+6</button>
             <AdvantageDropdown
               selectedStatus={selectedStatus} 
               setSelectedStatus={setSelectedStatus} 
@@ -390,7 +390,7 @@ export default function RollsHome() {
               value={numberOfDice} 
               onChange={handleNumberOfDice} 
               className='bg-transparent border mx-2 px-2 py-1'
-              style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
+              style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
             />
             <p>d</p>
             <input 
@@ -401,7 +401,7 @@ export default function RollsHome() {
               value={sides} 
               onChange={handleSides} 
               className='bg-transparent border mx-2 px-2 py-1'
-              style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
+              style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
             />
             <p>+</p>
             <input 
@@ -412,8 +412,8 @@ export default function RollsHome() {
               value={add} 
               onChange={handleAdd} 
               className='bg-transparent border mx-2 px-2 py-1'
-              style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
+              style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
             />
-            <button onClick={handleRoll} className='mx-2 px-4 py-1 border' style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>Roll</button>
+            <button onClick={handleRoll} className='mx-2 px-4 py-1 border' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>Roll</button>
           </div>
         </div> */}

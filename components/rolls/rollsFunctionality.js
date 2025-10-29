@@ -32,9 +32,9 @@ export default function RollsFunctionality({
             placeholder='Name'
             onChange={handleName} 
             className={`bg-transparent rounded mx-2 px-2 py-1 input-${theme.value}`}
-            style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary, placeholder: theme.secondary}}
+            style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary, placeholder: theme.secondary}}
           />
-          {/* <button onClick={handleFilterOpen} className='mx-2 px-2 py-1 border' style={{border: `1px solid ${theme.tertiary}`}}>
+          {/* <button onClick={handleFilterOpen} className='mx-2 px-2 py-1 border' style={{border: `2px solid ${theme.tertiary}`}}>
             <Image 
               src="/filter-white.png"
               width={25} 
@@ -70,7 +70,7 @@ export default function RollsFunctionality({
               value={numberOfDice} 
               onChange={handleNumberOfDice} 
               className='bg-transparent border mx-2 px-2 py-1 rounded'
-              style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
+              style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
             />
         </div>
         <div className='flex items-center my-5'>
@@ -85,7 +85,7 @@ export default function RollsFunctionality({
               value={sides} 
               onChange={handleSides} 
               className='bg-transparent border mx-2 px-2 py-1 rounded'
-              style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
+              style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
             />
           </div>
         </div>
@@ -99,7 +99,7 @@ export default function RollsFunctionality({
               value={add} 
               onChange={handleAdd} 
               className='bg-transparent border mx-2 px-2 py-1 rounded'
-              style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
+              style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}
             />
         </div>
       </div>

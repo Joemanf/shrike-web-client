@@ -5,7 +5,7 @@ export default function Header({theme}) {
 
   return (
     // style={{ borderColor: '#0051C8' }}
-    <div id="header" className='rounded mx-48 mb-12 mt-2' style={{ border: `1px solid ${theme.tertiary}`, backgroundColor: theme.primary }}>
+    <div id="header" className='rounded mx-48 mb-12 mt-2' style={{ border: `2px solid ${theme.tertiary}`, backgroundColor: theme.primary }}>
         <div className='flex justify-center p-6'>
             <Image
                 src="/Bird_2.svg"

@@ -81,7 +81,7 @@ export default function NavBar({ theme, setTheme }) {
   };
 
   return (
-    <div id="navbar" style={{ borderBottom: `1px solid ${theme.tertiary}` }} className='p-2 mb-8 flex justify-between'>
+    <div id="navbar" style={{ borderBottom: `2px solid ${theme.tertiary}` }} className='p-2 mb-8 flex justify-between'>
         <div className=''>
           <p>TotS</p>
         </div>
