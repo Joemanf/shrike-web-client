@@ -8,9 +8,11 @@ import { ref, onValue, child, push, update, query, limitToFirst, startAt } from 
 import '../app/globals.css'
 import '../styles/base.css'
 import Image from 'next/image'
+import QuickRolls from '@/components/rolls/quickRolls';
+import RollsFunctionality from '@/components/rolls/rollsFunctionality';
 
 export default function RollsHome() {
-  const [selectedStatus, setSelectedStatus] = useState('normal');
+  const [selectedStatus, setSelectedStatus] = useState({ value: 'normal', label: 'Normal' });
   const [theme, setTheme] = useState({ value: 'simple', label: 'Simple', primary: '#161616', secondary: '#4F4F4F', tertiary: '#FFFFFF' });
   const [name, setName] = useState('')
   const [filter, setFilter] = useState('')
@@ -101,7 +103,7 @@ export default function RollsHome() {
     }
     let locRolls = []
     let rollsStr = ''
-    if (selectedStatus === 'normal') {
+    if (selectedStatus.value === 'normal') {
       for (let i = 0; i < parseInt(numberOfDice); i++) {
           let roll = Math.floor(Math.random() * parseInt(sides)) + 1
           locRolls.push(roll + parseInt(locAdd));
@@ -116,10 +118,10 @@ export default function RollsHome() {
       }
     }
     const time = handleTime()
-    const logic = `${selectedStatus === 'advantage' ? `[Adv] ` : `${selectedStatus === `disadvantage` ? `[Dis] ` : ``}`}${numberOfDice}d${sides}${locAdd != 0 ? ` + ${locAdd}` : ``}`
+    const logic = `${selectedStatus.value === 'advantage' ? `[Adv] ` : `${selectedStatus.value === `disadvantage` ? `[Dis] ` : ``}`}${numberOfDice}d${sides}${locAdd != 0 ? ` + ${locAdd}` : ``}`
     let rollsTotal = [];
     locRolls.forEach((r, i) => {
-      if (selectedStatus === 'normal') {
+      if (selectedStatus.value === 'normal') {
         rollsTotal.push(r)
         rollsStr += `${r-parseInt(locAdd)}${locAdd ? ` + ${locAdd}` : ``}`
         if (i === rolls.length-1) {
@@ -132,7 +134,7 @@ export default function RollsHome() {
       }
     })
     const finalArr = []
-    if (selectedStatus !== 'normal') {
+    if (selectedStatus.value !== 'normal') {
       for (let i = 0; i < rollsTotal.length; i+=2) {
           const arr = [rollsTotal[i], rollsTotal[i+1]]
           rollsStr += `[${rollsTotal[i]-parseInt(locAdd)}${locAdd ?` + ${locAdd}` : ``}, ${rollsTotal[i+1]-parseInt(locAdd)}${locAdd ?` + ${locAdd}` : ``}]`
@@ -142,7 +144,7 @@ export default function RollsHome() {
               rollsStr += ', '
           }
           let final
-          if (selectedStatus === 'advantage') {
+          if (selectedStatus.value === 'advantage') {
               final = Math.max(...arr)
           } else {
               final = Math.min(...arr)
@@ -162,7 +164,7 @@ export default function RollsHome() {
     }
     sendToBackend(rollData)
     setButtonDisabled(true)
-    setSelectedStatus('normal')
+    setSelectedStatus({ value: 'normal', label: 'Normal' })
     setTimeout(() => {
       setButtonDisabled(false)
     }, 1000)
@@ -290,7 +292,7 @@ export default function RollsHome() {
   }
 
   return (
-    <main className="" style={{backgroundColor: theme.primary, color: theme.tertiary}}>
+    <main className="" style={{backgroundColor: theme.primary, color: theme.tertiary, height: '100vh'}}>
       <NavBar theme={theme} setTheme={setTheme} />
       <Header theme={theme} />
         {
@@ -305,10 +307,47 @@ export default function RollsHome() {
             />
           </div>
         }
-      <div id="rollBox" className='flex flex-col w-full px-24 py-6'>
-        <div id="topBar" className='flex justify-between p-2 border' style={{border: `1px solid ${theme.tertiary}`}}>
+      <div id="rollBox" className='flex px-24 pl-44 justify-center ' style={{ backgroundColor: theme.primary }}>
+        <div id="rolls" className=''>
+          <div className='flex rounded-tl items-center' style={{border: `1px solid ${theme.tertiary}`}}>
+            <p className='p-1 pr-2 min-w-fit' style={{backgroundColor: theme.primary, width: '10rem'}}>Date/Time</p>
+            <p className='p-1 pl-2 border-l min-h-full'>Rolls</p>
+          </div>
+          <RollsList 
+            rolls={filteredRolls} 
+            loadMoreRolls={loadMoreRolls} 
+            name={name} 
+            theme={theme}
+          />
+        </div>
+        <QuickRolls
+          theme={theme}
+          handleRoll={handleRoll}
+        />
+        <RollsFunctionality
+          theme={theme}
+          handleRoll={handleRoll}
+          name={name}
+          handleName={handleName}
+          errors={errors}
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+          numberOfDice={numberOfDice}
+          handleNumberOfDice={handleNumberOfDice}
+          sides={sides}
+          handleSides={handleSides}
+          add={add}
+          handleAdd={handleAdd}
+        />
+      </div>
+    </main>
+  );
+}
+
+// Filter is in here
+
+        {/* <div id="topBar" className='flex justify-between p-2 border' style={{border: `1px solid ${theme.tertiary}`}}>
           <div id="nameContainer" className='flex items-center' style={{ width: '465px' }}>
-            {/* <p>Name:</p> */}
             <input 
               id='' 
               value={name} 
@@ -377,22 +416,4 @@ export default function RollsHome() {
             />
             <button onClick={handleRoll} className='mx-2 px-4 py-1 border' style={{border: `1px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>Roll</button>
           </div>
-        </div>
-        <div id="rolls">
-          <div className='flex border items-center' style={{border: `1px solid ${theme.tertiary}`}}>
-            <p className='p-1 pr-2 min-w-fit' style={{backgroundColor: theme.primary, width: '10rem'}}>Date/Time</p>
-            <p className='p-1 pl-2 border-l min-h-full'>
-              Rolls
-            </p>
-          </div>
-          <RollsList 
-            rolls={filteredRolls} 
-            loadMoreRolls={loadMoreRolls} 
-            name={name} 
-            theme={theme}
-          />
-        </div>
-      </div>
-    </main>
-  );
-}
+        </div> */}
