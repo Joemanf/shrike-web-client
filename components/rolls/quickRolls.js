@@ -19,7 +19,7 @@ export default function QuickRolls({ theme, handleRoll }) {
         <button onClick={() => handleRoll(7)} className='w-8/12 mx-2 my-1 px-4 py-1 rounded text-sm' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+7</button>
         <button onClick={() => handleRoll(8)} className='w-8/12 mx-2 my-1 px-4 py-1 rounded text-sm' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+8</button>
         <button onClick={() => handleRoll(9)} className='w-8/12 mx-2 my-1 px-4 py-1 rounded text-sm' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+9</button>
-        <button onClick={() => handleRoll(10)} className='w-8/12 mx-2 my-1 px-4 py-1 rounded text-sm' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+10</button>
+        {/* <button onClick={() => handleRoll(10)} className='w-8/12 mx-2 my-1 px-4 py-1 rounded text-sm' style={{border: `2px solid ${theme.tertiary}`, backgroundColor: theme.secondary}}>+10</button> */}
       </div>
     </div>
   )
