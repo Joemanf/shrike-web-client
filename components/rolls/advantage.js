@@ -30,6 +30,7 @@ export default function AdvantageDropdown({ selectedStatus, setSelectedStatus, t
       backgroundColor: theme.secondary,
       color: theme.tertiary,
       cursor: 'pointer',
+      border: `2px solid ${theme.tertiary}`
     }),
     menu: (base, state) => ({
       ...base,
