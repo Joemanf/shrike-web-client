@@ -61,7 +61,7 @@ export default function RollsHome() {
   }
 
   const handleNumberOfDice = e => {
-    setNumberOfDice(e.target.value);
+    setNumberOfDice(e.target.value > 100 ? 100 : e.target.value);
   }
 
   const handleSides = e => {
