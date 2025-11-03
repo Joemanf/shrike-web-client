@@ -163,6 +163,7 @@ export default function RollsHome() {
     sendToBackend(rollData)
     setButtonDisabled(true)
     setSelectedStatus({ value: 'normal', label: 'Normal' })
+    handleNumberOfDice(1)
     setTimeout(() => {
       setButtonDisabled(false)
     }, 1000)
